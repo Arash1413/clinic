@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-5 pt-5">
+    <div class="row">
+        <!-- محتوای اصلی مقاله -->
+        <div class="col-lg-8">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">خانه</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'blog_list' %}">وبلاگ</a></li>
+                    <li class="breadcrumb-item active">{{ post.title }}</li>
+                </ol>
+            </nav>
+            
+            <h1 class="fw-bold mb-4">{{ post.title }}</h1>
+            <img src="{{ post.image.url }}" class="img-fluid rounded-4 mb-4 shadow" alt="{{ post.title }}">
+            
+            <div class="d-flex gap-3 mb-4 text-muted border-bottom pb-3">
+                <span><i class="bi bi-calendar"></i> {{ post.created_at|date:"d F Y" }}</span>
+                <span><i class="bi bi-eye"></i> {{ post.view_count }} بازدید</span>
+                <span><i class="bi bi-folder"></i> {{ post.category.title }}</span>
+            </div>
+
+            <div class="blog-content fs-5 leading-lg">
+                {{ post.content|linebreaks }}
+            </div>
+        </div>
+
+        <!-- سایدبار (مقالات اخیر) -->
+        <div class="col-lg-4">
+            <div class="card p-4 bg-light border-0">
+                <h5 class="fw-bold mb-4">جدیدترین مقالات</h5>
+                {% for recent in recent_posts %}
+                <div class="d-flex mb-3 align-items-center">
+                    <img src="{{ recent.image.url }}" class="rounded" style="width: 70px; height: 70px; object-fit: cover;">
+                    <div class="ms-3">
+                        <h6 class="mb-1"><a href="{% url 'blog_detail' recent.slug %}" class="text-decoration-none text-dark small fw-bold">{{ recent.title }}</a></h6>
+                        <small class="text-muted">{{ recent.created_at|date:"d M Y" }}</small>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

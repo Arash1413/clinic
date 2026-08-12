@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<!-- هدر گالری -->
+<section class="py-5 text-center" style="background-color: #fbfcfe;">
+    <div class="container pt-5">
+        <h1 class="display-5 fw-bold mb-3">گالری نمونه کارها</h1>
+        <p class="lead text-muted mx-auto" style="max-width: 600px;">
+            در این بخش می‌توانید نتایج واقعی جراحی‌ها و خدمات زیبایی مراجعین ما را به تفکیک نوع عمل مشاهده کنید.
+        </p>
+    </div>
+</section>
+
+<div class="container my-5">
+    
+    <!-- دکمه‌های فیلتر دسته بندی -->
+    <div class="d-flex justify-content-center flex-wrap gap-2 mb-5">
+        <a href="{% url 'gallery' %}" 
+           class="btn {% if not selected_category %}btn-primary shadow{% else %}btn-outline-primary{% endif %} rounded-pill px-4">
+            همه نمونه کارها
+        </a>
+        
+        {% for cat in categories %}
+            <a href="{% url 'gallery_by_category' cat.slug %}" 
+               class="btn {% if selected_category.slug == cat.slug %}btn-primary shadow{% else %}btn-outline-primary{% endif %} rounded-pill px-4">
+                {{ cat.title }}
+            </a>
+        {% endfor %}
+    </div>
+
+    <!-- شبکه‌ی نمایش تصاویر -->
+    <div class="row g-4">
+        {% for item in items %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm">
+                
+                <!-- بخش تصاویر قبل و بعد کنار هم -->
+                <div class="row g-0 border-bottom">
+                    <div class="col-6 p-1">
+                        <div class="position-relative overflow-hidden rounded-3">
+                            <a href="{{ item.before_image.url }}" class="glightbox" data-gallery="gallery-{{ item.id }}">
+                                <img src="{{ item.before_image.url }}" class="img-fluid w-100" style="height: 220px; object-fit: cover;" alt="قبل">
+                                <span class="badge bg-dark position-absolute bottom-0 start-0 m-2 opacity-75">قبل</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-6 p-1">
+                        <div class="position-relative overflow-hidden rounded-3">
+                            <a href="{{ item.after_image.url }}" class="glightbox" data-gallery="gallery-{{ item.id }}">
+                                <img src="{{ item.after_image.url }}" class="img-fluid w-100" style="height: 220px; object-fit: cover;" alt="بعد">
+                                <span class="badge bg-primary position-absolute bottom-0 end-0 m-2">بعد</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- توضیحات پایین کارت -->
+                <div class="card-body p-4 text-center">
+                    <h5 class="fw-bold mb-2">{{ item.title }}</h5>
+                    <div class="badge bg-light text-primary mb-2 px-3 rounded-pill">{{ item.category.title }}</div>
+                    <p class="text-muted small mb-0">{{ item.description }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="p-5 bg-light rounded-5">
+                <p class="text-muted fs-5">در حال حاضر نمونه کاری در این دسته موجود نیست.</p>
+                <a href="{% url 'gallery' %}" class="btn btn-link">بازگشت به همه نمونه کارها</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    /* انیمیشن کوچک برای تصاویر گالری */
+    .glightbox img {
+        transition: transform 0.5s ease;
+    }
+    .glightbox:hover img {
+        transform: scale(1.1);
+    }
+    
+    /* استایل دکمه‌های فیلتر در حالت هاور */
+    .btn-outline-primary:hover {
+        background-color: var(--primary-color);
+        color: white;
+        box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+    }
+</style>
+
+{% endblock %}
