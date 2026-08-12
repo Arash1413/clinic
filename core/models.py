@@ -1,17 +1,20 @@
 from django.db import models
 from django.utils.text import slugify
 from django.db import models
-
+from django.urls import reverse
 # مدل خدمات (مثلاً لیزر، بوتاکس و ...)
 class Service(models.Model):
-    title = models.CharField(max_length=200, verbose_name="عنوان خدمت")
-    description = models.TextField(verbose_name="توضیحات کوتاه")
-    content = models.TextField(verbose_name="متن کامل")
-    image = models.ImageField(upload_to='services/', verbose_name="تصویر")
-    slug = models.SlugField(unique=True)
+    title = models.CharField(max_length=200, verbose_name="نام خدمت (مثلاً کراتین مو)")
+    image = models.ImageField(upload_to='services/', verbose_name="تصویر خدمت")
+    slug = models.SlugField(unique=True, verbose_name="شناسه در آدرس (انگلیسی)")
+    description = models.TextField(verbose_name="توضیحات کامل خدمت")
 
     def __str__(self):
         return self.title
+
+    # این متد کمک می‌کند وقتی روی کارت کلیک شد به صفحه جزئیات برود
+    def get_absolute_url(self):
+        return reverse('service_detail', kwargs={'slug': self.slug})
 
 # مدل وبلاگ
 class Post(models.Model):

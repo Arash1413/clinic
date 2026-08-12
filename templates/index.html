@@ -2,21 +2,19 @@
 {% load static %}
 
 {% block content %}
-<!-- ۱. بخش هیرو اصلاح شده (متن در سمت چپ، صورت مدل در سمت راست) -->
+<!-- ۱. بخش هیرو (بنر اصلی) -->
 <section class="hero-section d-flex align-items-center position-relative overflow-hidden" 
     style="background: url('{% static "images/hero.jpg" %}'); 
            background-size: cover; 
            background-position: center right; 
            min-height: 95vh;">
     
-    <!-- لایه گرادینت اصلاح شده برای سفید کردن سمت چپ عکس جهت خوانایی متن -->
     <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
                 background: linear-gradient(to left, rgba(255,255,255,0) 0%, rgba(255,255,255,0.95) 65%);">
     </div>
 
     <div class="container position-relative" style="z-index: 2;">
         <div class="row align-items-center">
-            <!-- ستون متن در سمت چپ -->
             <div class="col-lg-6 text-start" data-aos="fade-right">
                 <span class="badge px-3 py-2 rounded-pill mb-3 fw-bold" style="background: #fdf2f4; color: var(--primary-color);">تجلی زیبایی و سلامت پوست</span>
                 <h1 class="display-3 fw-bold mb-4" style="color: var(--dark-text); line-height: 1.2;">
@@ -30,7 +28,6 @@
                     <a href="{% url 'gallery' %}" class="btn btn-outline-dark btn-lg px-4 py-3 rounded-pill">مشاهده نمونه‌کارها</a>
                 </div>
             </div>
-            <!-- ستون سمت راست برای نمایش صورت مدل خالی می‌ماند -->
             <div class="col-lg-6"></div>
         </div>
     </div>
@@ -41,7 +38,7 @@
     <div class="container">
         <div class="card border-0 shadow-lg rounded-4">
             <div class="card-body py-4 text-center">
-                <div class="row g-4">
+                <div class="row g-4 text-center">
                     <div class="col-6 col-md-3 border-end"><h2 class="fw-bold text-primary mb-0">+۱۰</h2><small>سال تجربه</small></div>
                     <div class="col-6 col-md-3 border-end"><h2 class="fw-bold text-primary mb-0">+۵۰۰۰</h2><small>مراجع راضی</small></div>
                     <div class="col-6 col-md-3 border-end"><h2 class="fw-bold text-primary mb-0">+۲۰</h2><small>خدمات تخصصی</small></div>
@@ -52,69 +49,79 @@
     </div>
 </section>
 
-<!-- ۳. بخش ویژگی‌ها -->
-<section class="py-5 my-5">
-    <div class="container">
+<!-- ۳. بخش خدمات کلینیک (منتقل شده به زیر بنر) -->
+<section id="services" class="py-5 bg-white">
+    <div class="container py-5">
+        <!-- تیتر بخش خدمات -->
         <div class="text-center mb-5" data-aos="fade-up">
-            <h6 class="text-primary fw-bold">چرا کلینیک ما؟</h6>
-            <h2 class="fw-bold">ویژگی‌های متمایز ما</h2>
-            <div class="mx-auto" style="width: 50px; height: 3px; background: var(--primary-color);"></div>
+            <h6 class="text-primary fw-bold text-uppercase">خدمات کلینیک</h6>
+            <h2 class="fw-bold text-dark display-6">آنچه برای شما انجام می‌دهیم</h2>
+            <div class="mx-auto mt-3" style="width: 60px; height: 3px; background: var(--primary-color);"></div>
         </div>
-        <div class="row g-4">
-            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
-                <div class="p-5 text-center border-0 card bg-white h-100">
-                    <div class="fs-1 text-primary mb-3"><i class="bi bi-shield-check"></i></div>
-                    <h5 class="fw-bold">استاندارد جهانی</h5>
-                    <p class="text-muted small">بهره‌مندی از تجهیزات دارای تاییدیه FDA و بالاترین استانداردهای بهداشتی.</p>
-                </div>
-            </div>
-            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-                <div class="p-5 text-center border-0 card bg-white h-100">
-                    <div class="fs-1 text-primary mb-3"><i class="bi bi-magic"></i></div>
-                    <h5 class="fw-bold">نتایج طبیعی</h5>
-                    <p class="text-muted small">تخصص ما در حفظ چهره طبیعی شما و تنها اصلاح عیوب با ظرافت بالاست.</p>
-                </div>
-            </div>
-            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
-                <div class="p-5 text-center border-0 card bg-white h-100">
-                    <div class="fs-1 text-primary mb-3"><i class="bi bi-person-hearts"></i></div>
-                    <h5 class="fw-bold">مشاوره تخصصی</h5>
-                    <p class="text-muted small">ارائه بهترین راهکارهای درمانی متناسب با نوع پوست و نیاز شما.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
-<!-- ۴. بخش خدمات -->
-<section id="services" class="py-5 bg-light" style="border-radius: 60px 60px 0 0;">
-    <div class="container py-4">
-        <div class="d-flex justify-content-between align-items-end mb-5">
-            <div data-aos="fade-right">
-                <h6 class="text-primary fw-bold">خدمات کلینیک</h6>
-                <h2 class="fw-bold">آنچه برای شما انجام می‌دهیم</h2>
-            </div>
-            <a href="{% url 'book_appointment' %}" class="btn btn-outline-primary rounded-pill px-4">رزرو نوبت مشاوره</a>
-        </div>
-        <div class="row g-4">
+        <!-- ردیف کارت‌های خدمات (نمایش داینامیک از ادمین) -->
+        <div class="row g-4 justify-content-center">
             {% for service in services %}
-            <div class="col-md-4" data-aos="fade-up">
-                <div class="card h-100 border-0 shadow-sm hover-zoom">
-                    <img src="{{ service.image.url }}" class="card-img-top" style="height: 280px; object-fit: cover;">
-                    <div class="card-body p-4 text-center">
-                        <h5 class="fw-bold">{{ service.title }}</h5>
-                        <p class="text-muted small mb-4">{{ service.description|truncatewords:12 }}</p>
-                        <a href="{% url 'service_detail' service.slug %}" class="text-primary text-decoration-none fw-bold small">جزئیات بیشتر &larr;</a>
+            <div class="col-6 col-md-4 col-lg-3" data-aos="zoom-in">
+                <!-- کارت خدمت: تصویر بالا، متن پایین -->
+                <a href="{% url 'service_detail' service.slug %}" class="text-decoration-none group">
+                    <div class="card h-100 border-0 bg-transparent service-card-minimal">
+                        <div class="overflow-hidden rounded-4 shadow-sm mb-3 position-relative">
+                            <!-- تصویر خدمت -->
+                            <img src="{{ service.image.url }}" class="img-fluid w-100 service-img" 
+                                 style="height: 280px; object-fit: cover;" alt="{{ service.title }}">
+                        </div>
+                        <div class="card-body p-0 text-center">
+                            <!-- نام خدمت -->
+                            <h5 class="fw-bold text-dark service-card-title">{{ service.title }}</h5>
+                        </div>
                     </div>
-                </div>
+                </a>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <p class="text-muted">هنوز خدماتی در پنل مدیریت تعریف نشده است.</p>
             </div>
             {% endfor %}
         </div>
     </div>
 </section>
 
-<!-- ۵. بخش CTA -->
-<section class="py-5 mt-5">
+<!-- ۴. بخش ویژگی‌ها (چرا کلینیک ما؟) -->
+<section class="py-5 bg-light" style="border-radius: 60px 60px 0 0;">
+    <div class="container py-5">
+        <div class="text-center mb-5" data-aos="fade-up">
+            <h6 class="text-primary fw-bold">چرا کلینیک ما؟</h6>
+            <h2 class="fw-bold">ویژگی‌های متمایز ما</h2>
+        </div>
+        <div class="row g-4 text-center">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="p-4 border-0 bg-transparent">
+                    <div class="fs-1 text-primary mb-3"><i class="bi bi-shield-check"></i></div>
+                    <h5 class="fw-bold">استاندارد جهانی</h5>
+                    <p class="text-muted small">بهره‌مندی از تجهیزات دارای تاییدیه FDA و استانداردهای بهداشتی.</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="p-4 border-0 bg-transparent">
+                    <div class="fs-1 text-primary mb-3"><i class="bi bi-magic"></i></div>
+                    <h5 class="fw-bold">نتایج طبیعی</h5>
+                    <p class="text-muted small">تخصص ما در حفظ چهره طبیعی شما و تنها اصلاح عیوب با ظرافت بالاست.</p>
+                </div>
+            </div>
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="p-4 border-0 bg-transparent">
+                    <div class="fs-1 text-primary mb-3"><i class="bi bi-person-hearts"></i></div>
+                    <h5 class="fw-bold">مشاوره تخصصی</h5>
+                    <p class="text-muted small">ارائه بهترین راهکارهای درمانی متناسب با نیاز و پوست شما.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ۵. بخش CTA (آماده تغییر هستید؟) -->
+<section class="py-5">
     <div class="container">
         <div class="rounded-5 p-5 text-center text-white shadow-lg" 
              style="background: linear-gradient(135deg, var(--primary-color) 0%, #a6737f 100%);">
@@ -127,18 +134,39 @@
     </div>
 </section>
 
-<!-- Scripts & AOS -->
-<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-<script> AOS.init({ duration: 1200, once: true }); </script>
-
+<!-- استایل‌های اختصاصی برای کارت‌های خدمات جدید -->
 <style>
-    .hover-zoom:hover { transform: translateY(-12px); }
+    .service-card-minimal {
+        transition: transform 0.4s ease;
+    }
+    .service-img {
+        transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+    .service-card-minimal:hover .service-img {
+        transform: scale(1.1);
+    }
+    .service-card-minimal:hover .service-card-title {
+        color: var(--primary-color) !important;
+    }
+    .service-card-title {
+        transition: color 0.3s ease;
+        font-size: 1.15rem;
+        margin-top: 5px;
+    }
+    .rounded-4 {
+        border-radius: 25px !important;
+    }
     @media (max-width: 991px) {
         .hero-section { background-position: center !important; text-align: center !important; }
         .hero-section .text-start { text-align: center !important; }
         .hero-section .d-flex { justify-content: center !important; }
     }
 </style>
+
+<!-- اسکریپت انیمیشن -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<script> AOS.init({ duration: 1200, once: true }); </script>
+
 {% endblock %}

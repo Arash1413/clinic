@@ -1,32 +1,35 @@
 from django.contrib import admin
-from .models import Service, Post, Appointment, GalleryCategory, GalleryItem
+from .models import Service, Post, Appointment, GalleryCategory, GalleryItem, BlogCategory
 
-# شخصی‌سازی نحوه نمایش خدمات در پنل مدیریت
+# ثبت مدل خدمات
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    list_display = ('title', 'slug') # ستون‌هایی که در لیست نمایش داده می‌شود
-    prepopulated_fields = {'slug': ('title',)} # ساخت خودکار اسلاگ از روی عنوان
+    list_display = ('title', 'slug')
+    prepopulated_fields = {'slug': ('title',)}
 
-# نمایش مقالات وبلاگ
+# ثبت مدل دسته‌بندی وبلاگ
+@admin.register(BlogCategory)
+class BlogCategoryAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('title',)}
+
+# ثبت مدل مقالات وبلاگ
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'created_at')
-    search_fields = ('title', 'summary') # قابلیت جستجو در مقالات
+    list_display = ('title', 'category', 'created_at')
+    prepopulated_fields = {'slug': ('title',)}
 
-# نمایش نوبت‌های رزرو شده
+# ثبت مدل نوبت‌دهی
 @admin.register(Appointment)
 class AppointmentAdmin(admin.ModelAdmin):
     list_display = ('full_name', 'phone', 'service', 'date')
-    list_filter = ('date', 'service') # فیلتر کردن نوبت‌ها بر اساس تاریخ و نوع خدمت
+    list_filter = ('date', 'service')
 
-
-
-
+# ثبت مدل دسته‌بندی گالری
 @admin.register(GalleryCategory)
 class GalleryCategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('title',)}
 
+# ثبت مدل آیتم‌های گالری
 @admin.register(GalleryItem)
 class GalleryItemAdmin(admin.ModelAdmin):
     list_display = ('title', 'category')
-    list_filter = ('category',)
