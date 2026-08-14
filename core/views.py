@@ -1,8 +1,18 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages # برای نمایش پیام موفقیت
-from .models import BlogCategory, GalleryCategory, GalleryItem, Service, Post
+from .models import BlogCategory, GalleryCategory, GalleryItem, Service, Post, Appointment
 from .forms import AppointmentForm
 from django.shortcuts import get_object_or_404
+import json
+from django.http import JsonResponse
+import jdatetime
+
+def check_availability(request):
+    date_str = request.GET.get('date')
+    # پیدا کردن ساعت‌هایی که قبلاً برای این تاریخ رزرو شده‌اند
+    booked_appointments = Appointment.objects.filter(date=date_str).values_list('time', flat=True)
+    return JsonResponse({'booked_times': list(booked_appointments)})
+
 
 def home(request):
     services = Service.objects.all()
@@ -15,16 +25,24 @@ def service_detail(request, slug):
 
 
 def book_appointment(request):
-    if request.method == 'POST':
-        form = AppointmentForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'نوبت شما با موفقیت ثبت شد.')
-            return redirect('home')
-    else:
-        form = AppointmentForm()
-    return render(request, 'booking.html', {'form': form})
+    services = Service.objects.all()
+    
+    # تولید لیست ۱۴ روز آینده
+    today = jdatetime.date.today()
+    days_list = []
+    for i in range(14):
+        date = today + jdatetime.timedelta(days=i)
+        days_list.append({
+            'j_date': date.strftime('%Y-%m-%d'), # برای ذخیره در دیتابیس
+            'day_name': date.strftime('%A'),      # نام روز (مثلا شنبه)
+            'day_num': date.day,                 # شماره روز (مثلا ۲۶)
+            'month_name': date.strftime('%b'),   # نام ماه (مثلا مرداد)
+        })
 
+    return render(request, 'booking.html', {
+        'services': services,
+        'days_list': days_list
+    })
 
 def gallery_view(request, category_slug=None):
     categories = GalleryCategory.objects.all()
@@ -52,5 +70,11 @@ def blog_detail(request, slug):
     post.save()
     recent_posts = Post.objects.exclude(id=post.id).order_by('-created_at')[:3]
     return render(request, 'blog_detail.html', {'post': post, 'recent_posts': recent_posts})
+
+
+def service_detail(request, slug):
+    # این خط سرویس را بر اساس اسلاگ پیدا می‌کند
+    service = get_object_or_404(Service, slug=slug)
+    return render(request, 'service_detail.html', {'service': service})
 
 

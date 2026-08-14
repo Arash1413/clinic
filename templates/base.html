@@ -13,6 +13,8 @@
     
     <!-- کتابخانه نمایش بزرگ عکس‌ها -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/glightbox/3.2.0/css/glightbox.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
     <style>
         :root { 
@@ -104,14 +106,103 @@
         {% block content %}{% endblock %}
     </main>
 
-    <footer>
-        <div class="container text-center">
-            <h4 class="text-white fw-bold mb-3">کلینیک تخصصی زیبایی دکتر ...</h4>
-            <p>ارائه دهنده برترین خدمات زیبایی با استانداردهای جهانی</p>
-            <hr class="bg-secondary opacity-25">
-            <p class="mb-0">تمامی حقوق برای کلینیک محفوظ است &copy; ۲۰۲۴</p>
+    <footer class="bg-dark text-white pt-5 pb-3">
+    <div class="container">
+        <div class="row g-4">
+            <!-- ستون ۱: درباره کلینیک -->
+            <div class="col-lg-4 col-md-6">
+                <h5 class="fw-bold mb-4 text-primary">کلینیک دکتر [نام دکتر]</h5>
+                <p class="text-secondary lh-lg">
+                    ارائه دهنده پیشرفته‌ترین خدمات زیبایی و درمانی با بهره‌گیری از جدیدترین تکنولوژی‌های روز دنیا و کادری مجرب در محیطی آرام و حرفه‌ای.
+                </p>
+                <div class="social-links mt-4">
+                    <a href="#" class="btn btn-outline-light btn-sm rounded-circle me-2"><i class="bi bi-instagram"></i></a>
+                    <a href="#" class="btn btn-outline-light btn-sm rounded-circle me-2"><i class="bi bi-telegram"></i></a>
+                    <a href="#" class="btn btn-outline-light btn-sm rounded-circle me-2"><i class="bi bi-whatsapp"></i></a>
+                    <a href="#" class="btn btn-outline-light btn-sm rounded-circle"><i class="bi bi-youtube"></i></a>
+                </div>
+            </div>
+
+            <!-- ستون ۲: دسترسی سریع -->
+            <div class="col-lg-2 col-md-6">
+                <h5 class="fw-bold mb-4">دسترسی سریع</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="{% url 'home' %}" class="text-secondary text-decoration-none hover-white">صفحه اصلی</a></li>
+                    <li class="mb-2"><a href="{% url 'gallery' %}" class="text-secondary text-decoration-none hover-white">گالری نمونه کار</a></li>
+                    <li class="mb-2"><a href="{% url 'book_appointment' %}" class="text-secondary text-decoration-none hover-white">رزرو نوبت</a></li>
+                    <li class="mb-2"><a href="#" class="text-secondary text-decoration-none hover-white">سوالات متداول</a></li>
+                </ul>
+            </div>
+
+            <!-- ستون ۳: اطلاعات تماس و موقعیت -->
+            <div class="col-lg-3 col-md-6">
+                <h5 class="fw-bold mb-4">اطلاعات تماس</h5>
+                <p class="text-secondary mb-2">
+                    <i class="bi bi-geo-alt-fill text-primary me-2"></i>
+                    تهران، خیابان ولیعصر، نرسیده به میدان ونک، ساختمان پزشکان...
+                </p>
+                <p class="text-secondary mb-2">
+                    <i class="bi bi-telephone-fill text-primary me-2"></i>
+                    ۰۲۱-۸۸۸۸۸۸۸۸
+                </p>
+                <p class="text-secondary mb-2">
+                    <i class="bi bi-envelope-fill text-primary me-2"></i>
+                    info@drclinic.com
+                </p>
+                <p class="text-secondary">
+                    <i class="bi bi-clock-fill text-primary me-2"></i>
+                    شنبه تا پنجشنبه: ۱۰ صبح تا ۸ شب
+                </p>
+            </div>
+
+            <!-- ستون ۴: نقشه کوچک یا نمادها -->
+            <div class="col-lg-3 col-md-6 text-center">
+                <h5 class="fw-bold mb-4">موقعیت ما</h5>
+                <div class="rounded overflow-hidden" style="height: 150px;">
+                    <!-- در اینجا می‌توانید آی‌فریم گوگل مپ را قرار دهید -->
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d51833.0452331828!2d51.35334!3d35.69944!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzXCsDQxJzU4LjAiTiA1McKwMjEnMTEuOSJF!5e0!3m2!1sen!2sir!4v1690000000000!5m2!1sen!2sir" 
+                        width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
+                    </iframe>
+                </div>
+            </div>
         </div>
-    </footer>
+
+        <hr class="mt-5 mb-4 border-secondary">
+
+        <div class="row align-items-center">
+            <div class="col-md-6 text-center text-md-start">
+                <p class="text-secondary small mb-0">
+                    &copy; ۲۰۲۴ تمامی حقوق برای کلینیک دکتر محفوظ است. طراحی و توسعه با جنگو.
+                </p>
+            </div>
+            <div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
+                <img src="https://via.placeholder.com/40" alt="Enamad" class="bg-white p-1 rounded me-2">
+                <img src="https://via.placeholder.com/40" alt="Samandehi" class="bg-white p-1 rounded">
+            </div>
+        </div>
+    </div>
+</footer>
+
+<style>
+    /* استایل‌های تکمیلی برای فوتر */
+    footer .text-secondary {
+        font-size: 0.9rem;
+        transition: 0.3s;
+    }
+    footer .hover-white:hover {
+        color: white !important;
+        padding-right: 5px;
+    }
+    footer .social-links a:hover {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+        transform: translateY(-3px);
+    }
+    footer i {
+        vertical-align: middle;
+    }
+</style>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/glightbox/3.2.0/js/glightbox.min.js"></script>

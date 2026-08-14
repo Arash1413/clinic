@@ -93,6 +93,31 @@ class Post(models.Model):
         return self.title
 
 
+class Appointment(models.Model):
+    # انتخاب ساعت‌های کاری (مثلاً هر نیم ساعت یک نوبت)
+    TIME_CHOICES = [
+        ('10:00', '10:00'), ('10:30', '10:30'),
+        ('11:00', '11:00'), ('11:30', '11:30'),
+        ('16:00', '16:00'), ('16:30', '16:30'),
+        ('17:00', '17:00'), ('17:30', '17:30'),
+        ('18:00', '18:00'), ('18:30', '18:30'),
+    ]
+
+    full_name = models.CharField(max_length=100)
+    phone = models.CharField(max_length=15)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    date = models.DateField()
+    time = models.CharField(max_length=5, choices=TIME_CHOICES) # فیلد جدید ساعت
+    message = models.TextField(blank=True)
+
+    class Meta:
+        # جلوگیری از ثبت نوبت تکراری (یک تاریخ و یک ساعت خاص فقط یکبار رزرو شود)
+        unique_together = ('date', 'time')
+
+    def __str__(self):
+        return f"{self.full_name} - {self.date} {self.time}"
+
+
 
 
 # Create your models here.

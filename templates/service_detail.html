@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- هدر صفحه جزئیات -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">صفحه اصلی</a></li>
+                <li class="breadcrumb-item active text-primary" aria-current="page">{{ service.title }}</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row g-5">
+            <!-- ستون متن و توضیحات -->
+            <div class="col-lg-7 order-2 order-lg-1">
+                <h1 class="fw-bold mb-4 text-dark">{{ service.title }}</h1>
+                <div class="lh-lg text-secondary mb-5" style="text-align: justify;">
+                    {{ service.content|linebreaks }}
+                </div>
+                
+                <!-- بخش مزایا یا نکات (اختیاری) -->
+                <div class="card border-0 bg-primary bg-opacity-10 p-4 mb-4">
+                    <h5 class="fw-bold text-primary mb-3">چرا این خدمت در کلینیک ما؟</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> استفاده از مواد اولیه درجه یک</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> کادر متخصص و با تجربه</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> محیطی کاملاً بهداشتی و آرام</li>
+                    </ul>
+                </div>
+
+                <a href="{% url 'book_appointment' %}" class="btn btn-primary btn-lg px-5 shadow">همین حالا نوبت بگیرید</a>
+            </div>
+
+            <!-- ستون تصویر -->
+            <div class="col-lg-5 order-1 order-lg-2">
+                <div class="sticky-top" style="top: 100px;">
+                    <img src="{{ service.image.url }}" alt="{{ service.title }}" class="img-fluid rounded-4 shadow-lg w-100">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

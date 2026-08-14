@@ -1,44 +1,153 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container my-5 py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card p-4 p-lg-5">
-                <div class="text-center mb-4">
-                    <h2 class="fw-bold text-primary">رزرو نوبت آنلاین</h2>
-                    <p class="text-muted">لطفاً فرم زیر را با دقت پر کنید تا با شما تماس بگیریم.</p>
-                </div>
+<style>
+    :root { --main-blue: #007bff; --light-gray: #f8f9fa; }
+    body { background-color: #f0f2f5; }
+    
+    /* نوار پیشرفت (Stepper) */
+    .stepper { display: flex; justify-content: center; margin-bottom: 30px; position: relative; }
+    .step { text-align: center; width: 100px; font-size: 12px; color: #aaa; z-index: 1; }
+    .step.active { color: var(--main-blue); font-weight: bold; }
+    .step-circle { width: 15px; height: 15px; background: #ddd; border-radius: 50%; margin: 0 auto 5px; }
+    .active .step-circle { background: var(--main-blue); border: 3px solid #cce5ff; }
+
+    /* اسلایدر تاریخ */
+    .date-slider { display: flex; overflow-x: auto; gap: 10px; padding: 10px 0; scrollbar-width: none; }
+    .date-card { 
+        min-width: 85px; background: #fff; border: 1px solid #ddd; border-radius: 12px; 
+        padding: 15px 5px; text-align: center; cursor: pointer; transition: 0.3s;
+    }
+    .date-card:hover { border-color: var(--main-blue); }
+    .date-card.active { border-color: var(--main-blue); background: #eef6ff; }
+    .date-card .day-name { font-size: 13px; color: #666; }
+    .date-card .day-num { font-size: 20px; font-weight: bold; margin: 5px 0; }
+    .date-card .availability { font-size: 10px; color: #28a745; }
+
+    /* دکمه‌های ساعت */
+    .time-slot { 
+        border: 1px solid #28a745; color: #28a745; border-radius: 8px; 
+        padding: 10px; text-align: center; cursor: pointer; transition: 0.2s; font-weight: bold;
+    }
+    .time-slot:hover { background: #28a745; color: #fff; }
+    .time-slot.selected { background: #28a745; color: #fff; box-shadow: 0 4px 10px rgba(40,167,69,0.3); }
+
+    /* کارت اطلاعات دکتر */
+    .doctor-card { background: #fff; border-radius: 15px; padding: 20px; text-align: center; }
+    .doctor-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; }
+</style>
+
+<div class="container my-5">
+    <!-- نوار پیشرفت -->
+    <div class="stepper">
+        <div class="step"><div class="step-circle"></div>بررسی</div>
+        <div class="step"><div class="step-circle"></div>اطلاعات کاربر</div>
+        <div class="step active"><div class="step-circle"></div>انتخاب زمان</div>
+    </div>
+
+    <div class="row g-4">
+        <!-- سمت راست: انتخاب زمان -->
+        <div class="col-lg-8">
+            <div class="bg-white p-4 rounded-4 shadow-sm">
+                <h6 class="fw-bold mb-4">مرداد ۱۴۰۳</h6>
                 
-                <form method="post">
-                    {% csrf_token %}
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">نام و نام خانوادگی</label>
-                            {{ form.full_name }}
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">شماره موبایل</label>
-                            {{ form.phone }}
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">نوع خدمت مورد نظر</label>
-                            {{ form.service }}
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">تاریخ پیشنهادی</label>
-                            {{ form.date }}
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label fw-bold">توضیحات تکمیلی</label>
-                            {{ form.message }}
-                        </div>
-                        <div class="col-12 mt-4">
-                            <button type="submit" class="btn btn-primary w-100 py-3 fw-bold shadow">ثبت درخواست و رزرو</button>
-                        </div>
+                <!-- اسلایدر تاریخ افقی -->
+                <div class="date-slider">
+                    {% for day in days_list %}
+                    <div class="date-card" onclick="selectDate('{{ day.j_date }}', this)">
+                        <div class="day-name">{{ day.day_name }}</div>
+                        <div class="day-num">{{ day.day_num }}</div>
+                        <div class="availability">۱۰ نوبت خالی</div>
                     </div>
-                </form>
+                    {% endfor %}
+                </div>
+
+                <hr class="my-4 text-light">
+
+                <!-- شبکه ساعت‌ها -->
+                <div id="time-container" class="row g-3">
+                    <p class="text-center text-muted py-5">لطفاً ابتدا یک تاریخ را انتخاب کنید</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- سمت چپ: اطلاعات دکتر و دکمه ادامه -->
+        <div class="col-lg-4">
+            <div class="doctor-card shadow-sm mb-4">
+                <img src="/static/images/doctor.jpg" class="doctor-img mb-3" alt="دکتر">
+                <h5 class="fw-bold mb-1">دکتر [نام شما]</h5>
+                <p class="text-muted small">متخصص و جراح زیبایی</p>
+                <hr>
+                <div class="d-flex justify-content-between small mb-2">
+                    <span>زمان نوبت حضوری:</span>
+                    <span id="final-time" class="fw-bold text-primary">انتخاب نشده</span>
+                </div>
+                <div class="d-flex justify-content-between small mb-4">
+                    <span>هزینه خدمات:</span>
+                    <span class="fw-bold">۳۳,۰۰۰ تومان</span>
+                </div>
+                <button id="submit-btn" class="btn btn-secondary w-100 py-3 rounded-3 disabled" onclick="finalSubmit()">ادامه</button>
             </div>
         </div>
     </div>
 </div>
+
+<!-- فیلد مخفی برای ارسال فرم -->
+<form id="hidden-form" method="POST" action="{% url 'book_appointment' %}">
+    {% csrf_token %}
+    <input type="hidden" name="date" id="input-date">
+    <input type="hidden" name="time" id="input-time">
+</form>
+
+<script>
+    let selectedDate = "";
+    let selectedTime = "";
+
+    function selectDate(date, element) {
+        // تغییر ظاهر کارت تاریخ
+        document.querySelectorAll('.date-card').forEach(c => c.classList.remove('active'));
+        element.classList.add('active');
+        selectedDate = date;
+        document.getElementById('input-date').value = date;
+
+        // فراخوانی ساعت‌ها (API)
+        fetch(`/check-availability/?date=${date}`)
+            .then(res => res.json())
+            .then(data => renderTimes(data.booked_times));
+    }
+
+    function renderTimes(bookedTimes) {
+        const slots = ['15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00'];
+        const container = document.getElementById('time-container');
+        container.innerHTML = "";
+
+        slots.forEach(time => {
+            const isBooked = bookedTimes.includes(time);
+            const div = document.createElement('div');
+            div.className = "col-6 col-md-4";
+            div.innerHTML = `
+                <div class="time-slot ${isBooked ? 'opacity-25' : ''}" 
+                     onclick="${isBooked ? '' : `selectTime('${time}', this)`}">
+                    ${time}
+                </div>`;
+            container.appendChild(div);
+        });
+    }
+
+    function selectTime(time, element) {
+        document.querySelectorAll('.time-slot').forEach(t => t.classList.remove('selected'));
+        element.classList.add('selected');
+        selectedTime = time;
+        document.getElementById('input-time').value = time;
+        document.getElementById('final-time').innerText = selectedDate + " ساعت " + time;
+        
+        // فعال کردن دکمه ادامه
+        const btn = document.getElementById('submit-btn');
+        btn.classList.replace('btn-secondary', 'btn-primary');
+        btn.classList.remove('disabled');
+    }
+
+    function finalSubmit() {
+        document.getElementById('hidden-form').submit();
+    }
+</script>
 {% endblock %}
