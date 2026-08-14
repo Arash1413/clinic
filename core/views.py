@@ -25,24 +25,27 @@ def service_detail(request, slug):
 
 
 def book_appointment(request):
-    services = Service.objects.all()
-    
-    # تولید لیست ۱۴ روز آینده
+    if request.method == 'POST':
+        # دریافت تاریخ و ساعت از فرم پنهان و ذخیره در سشن
+        date = request.POST.get('date')
+        time = request.POST.get('time')
+        
+        if date and time:
+            request.session['booking_date'] = date
+            request.session['booking_time'] = time
+            return redirect('booking_info') # هدایت به مرحله بعد
+        
+    # کد تولید لیست ۱۴ روز آینده (همان کد قبلی)
     today = jdatetime.date.today()
     days_list = []
     for i in range(14):
         date = today + jdatetime.timedelta(days=i)
         days_list.append({
-            'j_date': date.strftime('%Y-%m-%d'), # برای ذخیره در دیتابیس
-            'day_name': date.strftime('%A'),      # نام روز (مثلا شنبه)
-            'day_num': date.day,                 # شماره روز (مثلا ۲۶)
-            'month_name': date.strftime('%b'),   # نام ماه (مثلا مرداد)
+            'j_date': date.strftime('%Y-%m-%d'),
+            'day_name': date.strftime('%A'),
+            'day_num': date.day,
         })
-
-    return render(request, 'booking.html', {
-        'services': services,
-        'days_list': days_list
-    })
+    return render(request, 'booking.html', {'days_list': days_list})
 
 def gallery_view(request, category_slug=None):
     categories = GalleryCategory.objects.all()
@@ -76,5 +79,37 @@ def service_detail(request, slug):
     # این خط سرویس را بر اساس اسلاگ پیدا می‌کند
     service = get_object_or_404(Service, slug=slug)
     return render(request, 'service_detail.html', {'service': service})
+
+def booking_info(request):
+    # چک کردن اینکه آیا کاربر مرحله قبل را انجام داده یا خیر
+    booking_date = request.session.get('booking_date')
+    booking_time = request.session.get('booking_time')
+    
+    if not booking_date or not booking_time:
+        return redirect('book_appointment')
+
+    if request.method == 'POST':
+        form = AppointmentForm(request.POST)
+        if form.is_valid():
+            appointment = form.save(commit=False)
+            # اضافه کردن تاریخ و ساعت از سشن به مدل قبل از ذخیره نهایی
+            appointment.date = booking_date
+            appointment.time = booking_time
+            appointment.save()
+            
+            # پاک کردن سشن بعد از ثبت موفق
+            del request.session['booking_date']
+            del request.session['booking_time']
+            
+            messages.success(request, f"نوبت شما برای تاریخ {booking_date} ساعت {booking_time} ثبت شد.")
+            return redirect('home')
+    else:
+        form = AppointmentForm()
+
+    return render(request, 'booking_info.html', {
+        'form': form,
+        'date': booking_date,
+        'time': booking_time
+    })
 
 

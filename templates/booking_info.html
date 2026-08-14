@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-5 pt-5">
+    <!-- نوار پیشرفت (Stepper) -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-6">
+            <div class="d-flex justify-content-between position-relative">
+                <div class="text-center" style="flex:1">
+                    <div class="rounded-circle bg-success text-white mx-auto mb-2" style="width:30px; height:30px; line-height:30px;">✓</div>
+                    <small>انتخاب زمان</small>
+                </div>
+                <div class="text-center" style="flex:1">
+                    <div class="rounded-circle bg-primary text-white mx-auto mb-2" style="width:30px; height:30px; line-height:30px;">۲</div>
+                    <small class="fw-bold">اطلاعات کاربر</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        <!-- فرم اطلاعات -->
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm p-4 rounded-4">
+                <h5 class="fw-bold mb-4">مشخصات نوبت‌گیرنده</h5>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label class="form-label small">نام و نام خانوادگی</label>
+                            {{ form.full_name }}
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label small">شماره موبایل</label>
+                            {{ form.phone }}
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label small">انتخاب خدمت</label>
+                            {{ form.service }}
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label small">توضیحات (اختیاری)</label>
+                            {{ form.message }}
+                        </div>
+                        <div class="col-12 mt-4">
+                            <button type="submit" class="btn btn-primary w-100 py-3 rounded-3 fw-bold">تایید و ثبت نهایی نوبت</button>
+                            <a href="{% url 'book_appointment' %}" class="btn btn-link w-100 mt-2 text-muted text-decoration-none small">بازگشت و تغییر زمان</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- خلاصه نوبت در سمت چپ -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm p-4 rounded-4 bg-light">
+                <h6 class="fw-bold mb-3">خلاصه نوبت انتخابی</h6>
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-white p-2 rounded-3 me-3 shadow-sm text-center" style="min-width: 60px;">
+                        <div class="small text-muted">تاریخ</div>
+                        <div class="fw-bold text-primary">{{ date }}</div>
+                    </div>
+                    <div>
+                        <div class="small text-muted">ساعت حضور</div>
+                        <div class="fw-bold">{{ time }}</div>
+                    </div>
+                </div>
+                <div class="alert alert-warning py-2 small border-0">
+                    <i class="bi bi-info-circle me-1"></i>
+                    لطفاً ۱۵ دقیقه قبل از ساعت تعیین شده در کلینیک حضور داشته باشید.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
