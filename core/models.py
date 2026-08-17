@@ -20,6 +20,7 @@ class Service(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, related_name='services', verbose_name="پزشک مربوطه")
     title = models.CharField(max_length=200, verbose_name="نام خدمت (مثلاً کراتین مو)")
     image = models.ImageField(upload_to='services/', verbose_name="تصویر خدمت")
+    detail_image = models.ImageField(upload_to='services/details/', verbose_name="تصویر صفحه جزئیات", null=True, blank=True)
     slug = models.SlugField(unique=True, verbose_name="شناسه در آدرس (انگلیسی)")
     description = models.TextField(verbose_name="توضیحات کامل خدمت")
 

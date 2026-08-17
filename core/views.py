@@ -30,7 +30,8 @@ def home(request):
     return render(request, 'index.html', {'services': services, 'posts': posts})
 
 def service_detail(request, slug):
-    service = Service.objects.get(slug=slug)
+    # لود کردن خدمت به همراه اطلاعات پزشک برای کاهش تعداد کوئری‌ها
+    service = get_object_or_404(Service.objects.select_related('doctor'), slug=slug)
     return render(request, 'service_detail.html', {'service': service})
 
 

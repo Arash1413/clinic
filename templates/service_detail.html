@@ -1,48 +1,168 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<!-- هدر صفحه جزئیات -->
-<section class="py-5 bg-light">
+<style>
+    :root { --primary-color: #c99396; --bg-soft: #fdf8f9; }
+    body { background-color: #fff; font-family: 'Vazirmatn', sans-serif; }
+
+    /* هدر صفحه */
+    .detail-header { background: var(--bg-soft); padding: 40px 0; border-bottom: 1px solid #f1f1f1; }
+    .breadcrumb { font-size: 0.85rem; }
+    
+    /* تصویر شاخص */
+    .detail-featured-img { 
+        width: 100%; border-radius: 25px; 
+        box-shadow: 0 15px 35px rgba(0,0,0,0.08); 
+        margin-bottom: 30px; object-fit: cover; height: 450px;
+    }
+
+    /* فهرست مطالب چسبنده (سمت راست) */
+    .toc-sidebar { position: sticky; top: 100px; padding-right: 15px; }
+    .toc-title { font-size: 1rem; fw-bold; color: #333; margin-bottom: 15px; border-right: 3px solid var(--primary-color); padding-right: 10px; }
+    .toc-link { display: block; padding: 8px 0; font-size: 0.9rem; color: #666; text-decoration: none; transition: 0.3s; }
+    .toc-link:hover { color: var(--primary-color); transform: translateX(-5px); }
+
+    /* محتوای اصلی */
+    .content-area h2 { font-weight: 800; color: #2c3e50; margin-top: 40px; margin-bottom: 20px; font-size: 1.75rem; }
+    .content-area p { line-height: 2; color: #555; text-align: justify; margin-bottom: 25px; }
+    
+    /* باکس‌های برجسته (مشابه سایت نمونه) */
+    .highlight-box { 
+        background: var(--bg-soft); border-right: 5px solid var(--primary-color); 
+        padding: 25px; border-radius: 15px; margin: 30px 0;
+    }
+
+    /* سایدبار رزرو (سمت چپ) */
+    .booking-sidebar { position: sticky; top: 100px; }
+    .sticky-card { 
+        background: #fff; border-radius: 20px; padding: 25px; 
+        box-shadow: 0 10px 40px rgba(0,0,0,0.05); border: 1px solid #f1f1f1;
+    }
+    .doctor-circle { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; }
+    
+    .btn-book-now { 
+        background: var(--primary-color); color: #fff; border: none; 
+        padding: 15px; width: 100%; border-radius: 12px; font-weight: bold; 
+        box-shadow: 0 5px 15px rgba(201, 147, 150, 0.3);
+    }
+    .btn-book-now:hover { background: #b37e81; color: #fff; transform: translateY(-3px); }
+
+    @media (max-width: 992px) {
+        .toc-sidebar { display: none; }
+        .detail-featured-img { height: 300px; }
+    }
+</style>
+
+<div class="detail-header">
     <div class="container">
         <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'home' %}">صفحه اصلی</a></li>
-                <li class="breadcrumb-item active text-primary" aria-current="page">{{ service.title }}</li>
+            <ol class="breadcrumb mb-2">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-secondary text-decoration-none">خانه</a></li>
+                <li class="breadcrumb-item"><a href="#" class="text-secondary text-decoration-none">خدمات کلینیک</a></li>
+                <li class="breadcrumb-item active text-dark">{{ service.title }}</li>
             </ol>
         </nav>
+        <h1 class="fw-bold">{{ service.title }}</h1>
     </div>
-</section>
+</div>
 
-<section class="py-5">
-    <div class="container">
-        <div class="row g-5">
-            <!-- ستون متن و توضیحات -->
-            <div class="col-lg-7 order-2 order-lg-1">
-                <h1 class="fw-bold mb-4 text-dark">{{ service.title }}</h1>
-                <div class="lh-lg text-secondary mb-5" style="text-align: justify;">
-                    {{ service.content|linebreaks }}
+<div class="container my-5">
+    <div class="row">
+        <!-- ۱. فهرست مطالب (فقط در دسکتاپ) -->
+        <div class="col-lg-2 d-none d-lg-block">
+            <div class="toc-sidebar">
+                <div class="toc-title">فهرست مطالب</div>
+                <a href="#intro" class="toc-link">معرفی خدمت</a>
+                <a href="#benefits" class="toc-link">مزایا و ویژگی‌ها</a>
+                <a href="#process" class="toc-link">مراحل انجام</a>
+                <a href="#faq" class="toc-link">سوالات متداول</a>
+            </div>
+        </div>
+
+        <!-- ۲. محتوای اصلی -->
+        <div class="col-lg-7 px-lg-5">
+            <div class="content-area">
+                <!-- تصویر اصلی -->
+                <img src="{% if service.detail_image %}{{ service.detail_image.url }}{% else %}{{ service.image.url }}{% endif %}" 
+                     class="detail-featured-img" alt="{{ service.title }}">
+
+                <div id="intro">
+                    <h2>{{ service.title }} چیست؟</h2>
+                    <p>{{ service.description|linebreaks }}</p>
                 </div>
-                
-                <!-- بخش مزایا یا نکات (اختیاری) -->
-                <div class="card border-0 bg-primary bg-opacity-10 p-4 mb-4">
-                    <h5 class="fw-bold text-primary mb-3">چرا این خدمت در کلینیک ما؟</h5>
+
+                <div class="highlight-box">
+                    <h5 class="fw-bold"><i class="bi bi-info-circle me-2"></i>نکته مهم</h5>
+                    <p class="mb-0 small">این خدمت در کلینیک ما توسط مجرب‌ترین کادر پزشکی و با استفاده از دستگاه‌های دارای تاییدیه FDA انجام می‌شود.</p>
+                </div>
+
+                <div id="benefits">
+                    <h2>مزایای این روش</h2>
+                    <p>در این بخش می‌توانید مزایای اختصاصی این خدمت را به صورت متنی بنویسید. این بخش در سایت دکتر مسلمی بسیار کامل است و به کاربر کمک می‌کند تا تصمیم نهایی را بگیرد.</p>
                     <ul class="list-unstyled">
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> استفاده از مواد اولیه درجه یک</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> کادر متخصص و با تجربه</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-primary me-2"></i> محیطی کاملاً بهداشتی و آرام</li>
+                        <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>بدون نیاز به جراحی و بیهوشی</li>
+                        <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>دوره نقاهت بسیار کوتاه</li>
+                        <li class="mb-2"><i class="bi bi-check2-circle text-success me-2"></i>نتایج کاملاً طبیعی و ماندگار</li>
                     </ul>
                 </div>
 
-                <a href="{% url 'book_appointment' %}" class="btn btn-primary btn-lg px-5 shadow">همین حالا نوبت بگیرید</a>
+                <div id="faq" class="mt-5 pt-4">
+                    <h2>سوالات متداول</h2>
+                    <div class="accordion accordion-flush" id="faqService">
+                        <div class="accordion-item border rounded-3 mb-2">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#f1">
+                                    هزینه این خدمت چقدر است؟
+                                </button>
+                            </h2>
+                            <div id="f1" class="accordion-collapse collapse" data-bs-parent="#faqService">
+                                <div class="accordion-body text-muted">هزینه‌ها بر اساس نیاز مراجعه‌کننده متفاوت است. برای اطلاع دقیق، رزرو نوبت مشاوره رایگان پیشنهاد می‌شود.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
 
-            <!-- ستون تصویر -->
-            <div class="col-lg-5 order-1 order-lg-2">
-                <div class="sticky-top" style="top: 100px;">
-                    <img src="{{ service.image.url }}" alt="{{ service.title }}" class="img-fluid rounded-4 shadow-lg w-100">
+        <!-- ۳. سایدبار رزرو و اطلاعات پزشک -->
+        <div class="col-lg-3">
+            <div class="booking-sidebar">
+                <div class="sticky-card text-center">
+                    <img src="{{ service.doctor.image.url }}" class="doctor-circle shadow-sm">
+                    <h6 class="fw-bold mb-1">{{ service.doctor.name }}</h6>
+                    <p class="text-muted small mb-4">{{ service.doctor.specialty }}</p>
+                    
+                    <div class="bg-light p-3 rounded-3 mb-4 text-end">
+                        <div class="d-flex justify-content-between mb-2 small">
+                            <span class="text-muted">مشاوره:</span>
+                            <span class="fw-bold text-success">رایگان</span>
+                        </div>
+                        <div class="d-flex justify-content-between small">
+                            <span class="text-muted">وضعیت:</span>
+                            <span class="text-danger">نوبت‌های محدود</span>
+                        </div>
+                    </div>
+
+                    <a href="{% url 'book_appointment' %}?service_id={{ service.id }}" class="btn btn-book-now mb-3">
+                        رزرو نوبت آنلاین
+                    </a>
+                    
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="#" class="text-secondary"><i class="bi bi-whatsapp"></i></a>
+                        <a href="#" class="text-secondary"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="text-secondary"><i class="bi bi-telephone"></i></a>
+                    </div>
+                </div>
+
+                <!-- باکس تماس سریع -->
+                <div class="bg-dark text-white p-4 rounded-4 mt-4 shadow text-center">
+                    <h6 class="fw-bold mb-2">نیاز به مشاوره دارید؟</h6>
+                    <p class="small opacity-75 mb-3">با ما تماس بگیرید</p>
+                    <a href="tel:02112345678" class="text-white text-decoration-none fw-bold">021-12345678</a>
                 </div>
             </div>
         </div>
     </div>
-</section>
+</div>
 {% endblock %}
