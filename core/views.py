@@ -9,10 +9,20 @@ import jdatetime
 
 def check_availability(request):
     date_str = request.GET.get('date')
-    # پیدا کردن ساعت‌هایی که قبلاً برای این تاریخ رزرو شده‌اند
-    booked_appointments = Appointment.objects.filter(date=date_str).values_list('time', flat=True)
+    service_id = request.GET.get('service_id')
+    
+    # پیدا کردن پزشکِ مربوط به این خدمت
+    service = get_object_or_404(Service, id=service_id)
+    doctor = service.doctor
+    
+    # فیلتر کردن نوبت‌ها: فقط نوبت‌های همین "پزشک" در این "تاریخ"
+    # با این کار نوبت‌های پزشکان دیگر در خدمات دیگر تاثیری روی این پزشک ندارد
+    booked_appointments = Appointment.objects.filter(
+        date=date_str, 
+        doctor=doctor
+    ).values_list('time', flat=True)
+    
     return JsonResponse({'booked_times': list(booked_appointments)})
-
 
 def home(request):
     services = Service.objects.all()
@@ -25,17 +35,24 @@ def service_detail(request, slug):
 
 
 def book_appointment(request):
+    # دریافت آیدی خدمتی که کاربر در صفحه اصلی انتخاب کرده است
+    service_id = request.GET.get('service_id')
+    # اگر آیدی نبود، اولین خدمت را به عنوان پیش‌فرض بگیر (یا می‌توانید خطا بدهید)
+    selected_service = get_object_or_404(Service, id=service_id) if service_id else Service.objects.first()
+
     if request.method == 'POST':
-        # دریافت تاریخ و ساعت از فرم پنهان و ذخیره در سشن
         date = request.POST.get('date')
         time = request.POST.get('time')
+        # گرفتن آیدی خدمت از فرم پنهان
+        s_id = request.POST.get('service_id')
         
-        if date and time:
+        if date and time and s_id:
             request.session['booking_date'] = date
             request.session['booking_time'] = time
-            return redirect('booking_info') # هدایت به مرحله بعد
+            request.session['booking_service_id'] = s_id
+            return redirect('booking_info') # رفتن به مرحله وارد کردن نام و تلفن
         
-    # کد تولید لیست ۱۴ روز آینده (همان کد قبلی)
+    # تولید لیست ۱۴ روز آینده
     today = jdatetime.date.today()
     days_list = []
     for i in range(14):
@@ -45,7 +62,11 @@ def book_appointment(request):
             'day_name': date.strftime('%A'),
             'day_num': date.day,
         })
-    return render(request, 'booking.html', {'days_list': days_list})
+
+    return render(request, 'booking.html', {
+        'days_list': days_list,
+        'pre_selected_service': selected_service
+    })
 
 def gallery_view(request, category_slug=None):
     categories = GalleryCategory.objects.all()
