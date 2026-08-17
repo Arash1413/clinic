@@ -1,5 +1,10 @@
 from django.contrib import admin
-from .models import Service, Post, Appointment, GalleryCategory, GalleryItem, BlogCategory
+from .models import Service, Post, Appointment, GalleryCategory, GalleryItem, BlogCategory, Doctor
+
+@admin.register(Doctor)
+class DoctorAdmin(admin.ModelAdmin):
+    list_display = ('name', 'specialty') # ستون‌هایی که در لیست نمایش داده می‌شود
+    search_fields = ('name',) # قابلیت جستجو بر اساس نام
 
 # ثبت مدل خدمات
 @admin.register(Service)
